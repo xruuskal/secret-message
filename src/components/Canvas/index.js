@@ -13,6 +13,7 @@ class Canvas extends Component {
     this.loopImagePixels = this.loopImagePixels.bind(this);
     this.startDrawing = this.startDrawing.bind(this);
     this.drawLine = this.drawLine.bind(this);
+    this.isSameColor = this.isSameColor.bind(this);
     this.removeRandomNonMsgPixels = this.removeRandomNonMsgPixels.bind(this);
     this.sleep = this.sleep.bind(this);
   }
@@ -86,20 +87,25 @@ class Canvas extends Component {
       console.error('No valid direction for drawing');
       return;
     }
-    let nextPixel = ctx.getImageData(x, y, 1, 1);
-    if (stopDrawing.r === nextPixel.data[0] && stopDrawing.g === nextPixel.data[1] && stopDrawing.b === nextPixel.data[2]) {
+    const nextPixelData = ctx.getImageData(x, y, 1, 1);
+    const nextPixel = { r: nextPixelData.data[0], g: nextPixelData.data[1], b: nextPixelData.data[2] }
+    if (this.isSameColor(stopDrawing, nextPixel)) {
       // We're done with this line
       return;
     }
-    else if (turnRight.r === nextPixel.data[0] && turnRight.g === nextPixel.data[1] && turnRight.b === nextPixel.data[2]) {
+    else if (this.isSameColor(turnRight, nextPixel)) {
       this.drawLine(this.props[direction]['right'], x, y, ctx);
     }
-    else if (turnLeft.r === nextPixel.data[0] && turnLeft.g === nextPixel.data[1] && turnLeft.b === nextPixel.data[2]) {
+    else if (this.isSameColor(turnLeft, nextPixel)) {
       this.drawLine(this.props[direction]['left'], x, y, ctx);
     }
     else {
       this.drawLine(direction, x, y, ctx);
     }
+  }
+
+  isSameColor(pixel1, pixel2) {
+    return pixel1.r === pixel2.r && pixel1.g === pixel2.g && pixel1.b === pixel2.b;
   }
 
   // Remove pixels randomly until only the message is left
