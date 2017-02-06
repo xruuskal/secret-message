@@ -56,10 +56,10 @@ class Canvas extends Component {
   // Check for pixels telling us to start drawing
   startDrawing(pixelColor, x, y, ctx) {
       const { drawUp, drawLeft } = this.props;
-      if (drawUp.r === pixelColor.r && drawUp.g === pixelColor.g && drawUp.b === pixelColor.b) {
+      if (this.isSameColor(drawUp, pixelColor)) {
         this.drawLine('up', x, y, ctx);
       }
-      else if (drawLeft.r === pixelColor.r && drawLeft.g === pixelColor.g && drawLeft.b === pixelColor.b) {
+      else if (this.isSameColor(drawLeft, pixelColor)) {
         this.drawLine('left', x, y, ctx);
       }
   }
